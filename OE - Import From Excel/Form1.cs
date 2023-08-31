@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace OE_ExcelImport
 {
@@ -29,6 +30,11 @@ namespace OE_ExcelImport
             InitializeComponent();
             InitTimer();
             ReadHistoryFile();
+
+            for (int i = 0; i < chlb_worksheets.Items.Count; i++)
+            {
+                chlb_worksheets.SetItemChecked(i, true);
+            }
         }
 
         private async void btn_import_Click(object sender, EventArgs e)
@@ -56,7 +62,15 @@ namespace OE_ExcelImport
             
             // simply start and await the loading task
             btn_import.Enabled = false;
-            if (OE_ExcelImport.weaponsAddedToDictionary == false)
+            if (OE_ExcelImport.weaponsAddedToDictionary == true)
+            {
+                if (MessageBox.Show("Data has already been imported and exported to the export folder. Do you want to do it again?", 
+                    "Data Already Exported", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    await Task.Run(() => OE_ExcelImport.LoadExcelDataClosedXML());
+                }
+            }
+            else
             {
                 await Task.Run(() => OE_ExcelImport.LoadExcelDataClosedXML());
             }

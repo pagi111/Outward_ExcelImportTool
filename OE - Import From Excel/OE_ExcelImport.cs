@@ -24,14 +24,11 @@ namespace OE_ExcelImport
         public class SL_Weapon : SL_Item
         {
             public string WeaponType;
-
+            
             public SL_Weapon() { }
             //SL_Weapon constructor for ClosedXML
             public SL_Weapon(IXLWorkbook wb, IXLWorksheet ws, IXLCell cell)
             {
-                
-                
-                
                 StatsHolder = new SL_WeaponStats
                 {
                     Damage_Bonus = new float[9],
@@ -78,44 +75,46 @@ namespace OE_ExcelImport
                         if (headingName == "AttackSpeed") { SH.AttackSpeed = Convert.ToSingle(workingCell.CachedValue); }
                         if (headingName == "Impact") { SH.Impact = Convert.ToSingle(workingCell.CachedValue); }
 
-
-                        if (headingName == "Effect 1" || headingName == "Effect 2" || headingName == "Effect 3") 
-                        {
-                            if (!string.IsNullOrEmpty(workingCell_nextCell.CachedValue.ToString()))
-                            { Effects.Add(new OE_Effect { StatusEffect = workingCell.CachedValue.ToString(), Buildup = (int)Convert.ToSingle(workingCell_nextCell.CachedValue) }); }
-
-                        }
+                        //Not working really well yet, but it's more about the Excel file than the code
+                        //if (headingName == "Effect 1" || headingName == "Effect 2" || headingName == "Effect 3")
+                        //{
+                        //    if (!string.IsNullOrEmpty(workingCell_nextCell.CachedValue.ToString()))
+                        //    { Effects.Add(new OE_Effect { StatusEffect = workingCell.CachedValue.ToString(), Buildup = (int)Convert.ToSingle(workingCell_nextCell.CachedValue) }); }
+                        //}
                     }
                 }
 
-                //IXLWorksheet ws_DmgOrRes;
-                //wb.TryGetWorksheet("Damage_BonusOrRes", out ws_DmgOrRes);
-                IXLWorksheet ws_DmgOrRes = wb.Worksheet("Damage_BonusOrRes");
-                var item_dmgBonus = ((SL_EquipmentStats)StatsHolder).Damage_Bonus;
-                var item_dmgResistance = ((SL_EquipmentStats)StatsHolder).Damage_Resistance;
-                
-                for (int i = 1; i <= ws_DmgOrRes.RowsUsed().Count(); i++)
+                IXLWorksheet ws_DmgOrRes;
+                if (wb.TryGetWorksheet("Damage_BonusOrRes", out ws_DmgOrRes))
+                //IXLWorksheet ws_DmgOrRes = wb.Worksheet("Damage_BonusOrRes");     //or this but first check if it exists
                 {
-                    string itemName = ws_DmgOrRes.Cell(i, 1).CachedValue.ToString();
-                    if (string.IsNullOrEmpty(itemName)) { break; }
-                    else if (itemName == cell.CachedValue.ToString() )
-                    {
-                        for (int j = 0; j < 6; j++)
-                        {
-                            if (!ws_DmgOrRes.Cell(i, j + 2).IsEmpty()) //y = array index; y+2 = column B in Excel
-                            {
-                                item_dmgBonus[j] = Convert.ToSingle(ws_DmgOrRes.Cell(i, j + 2).CachedValue);
-                            }
-                            if (!ws_DmgOrRes.Cell(i, j + 8).IsEmpty()) //y+8 = column H where resistances begin
-                            {
-                                item_dmgResistance[j] = Convert.ToSingle(ws_DmgOrRes.Cell(i, j + 8).CachedValue);
-                                //The above line can also be: item_dmgResistance[j] = ws_DmgOrRes.Cell(i, j + 8).GetValue<float>();
-                                //'Okreslone rzutowanie jest nieprawidowe' gdy powyższa linia to (WTF???): item_dmgResistance[j] = (float)ws_DmgOrRes.Cell(i, j + 8).CachedValue;
-                            }
+                    var item_dmgBonus = ((SL_EquipmentStats)StatsHolder).Damage_Bonus;
+                    var item_dmgResistance = ((SL_EquipmentStats)StatsHolder).Damage_Resistance;
 
+                    for (int i = 1; i <= ws_DmgOrRes.RowsUsed().Count(); i++)
+                    {
+                        string itemName = ws_DmgOrRes.Cell(i, 1).CachedValue.ToString();
+                        if (string.IsNullOrEmpty(itemName)) { break; }
+                        else if (itemName == cell.CachedValue.ToString())
+                        {
+                            for (int j = 0; j < 6; j++)
+                            {
+                                if (!ws_DmgOrRes.Cell(i, j + 2).IsEmpty()) //y = array index; y+2 = column B in Excel
+                                {
+                                    item_dmgBonus[j] = Convert.ToSingle(ws_DmgOrRes.Cell(i, j + 2).CachedValue);
+                                }
+                                if (!ws_DmgOrRes.Cell(i, j + 8).IsEmpty()) //y+8 = column H where resistances begin
+                                {
+                                    item_dmgResistance[j] = Convert.ToSingle(ws_DmgOrRes.Cell(i, j + 8).CachedValue);
+                                    //The above line can also be: item_dmgResistance[j] = ws_DmgOrRes.Cell(i, j + 8).GetValue<float>();
+                                    //'Okreslone rzutowanie jest nieprawidowe' gdy powyższa linia to (WTF???): item_dmgResistance[j] = (float)ws_DmgOrRes.Cell(i, j + 8).CachedValue;
+                                }
+
+                            }
                         }
                     }
                 }
+                
 
 
             }
@@ -176,7 +175,15 @@ namespace OE_ExcelImport
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
             System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
 
-            var wb = new XLWorkbook(Form1.chosenFile);
+            XLWorkbook wb;
+            try {
+                wb = new XLWorkbook(Form1.chosenFile);
+            }
+            catch (IOException) {
+                MessageBox.Show("The program could not open the specified Excel file. " +
+                    "Maybe it doesn't exist anymore or is in use (you need to close the file if it's open)?", "Cannot open Excel file!");
+                return;
+            }
 
             foreach (var worksheetName in Form1.worksheetsList)
             {

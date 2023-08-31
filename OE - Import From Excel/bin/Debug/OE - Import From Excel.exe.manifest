@@ -79,14 +79,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="OE - Import From Excel.exe" size="954280">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="OE - Import From Excel.exe" size="955304">
       <assemblyIdentity name="OE - Import From Excel" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>S7nC6jeNYxta8ixqGYB+9CQhZxdyuRNgT2rnOor9fZU=</dsig:DigestValue>
+        <dsig:DigestValue>L7X5HyxLmZ6rKvvMGthNusVuEI4d+jlPfzKZ0BxfkMc=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

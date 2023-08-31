@@ -56,7 +56,7 @@ namespace OE_ExcelImport
             this.btn_import.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_import.Font = new System.Drawing.Font("Monotype Corsiva", 22F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.btn_import.ForeColor = System.Drawing.Color.OldLace;
-            this.btn_import.Location = new System.Drawing.Point(151, 294);
+            this.btn_import.Location = new System.Drawing.Point(131, 297);
             this.btn_import.Margin = new System.Windows.Forms.Padding(0);
             this.btn_import.Name = "btn_import";
             this.btn_import.Size = new System.Drawing.Size(171, 43);
@@ -205,6 +205,7 @@ namespace OE_ExcelImport
             // 
             // chlb_worksheets
             // 
+            this.chlb_worksheets.CheckOnClick = true;
             this.chlb_worksheets.FormattingEnabled = true;
             this.chlb_worksheets.Items.AddRange(new object[] {
             "Swords_1h",
@@ -222,9 +223,9 @@ namespace OE_ExcelImport
             "Chakrams",
             "Daggers",
             "Pistols"});
-            this.chlb_worksheets.Location = new System.Drawing.Point(325, 267);
+            this.chlb_worksheets.Location = new System.Drawing.Point(305, 272);
             this.chlb_worksheets.Name = "chlb_worksheets";
-            this.chlb_worksheets.Size = new System.Drawing.Size(120, 94);
+            this.chlb_worksheets.Size = new System.Drawing.Size(120, 109);
             this.chlb_worksheets.TabIndex = 16;
             // 
             // Form1
