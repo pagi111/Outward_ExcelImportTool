@@ -232,7 +232,7 @@ namespace OE_ExcelImport
 
                 using (StreamWriter writer = new StreamWriter(dir + path))
                 {
-                    writer.WriteLine(" <?xml version=\"1.0\"?>");
+                    writer.WriteLine("<?xml version=\"1.0\"?>");
                     writer.WriteLine("<" + itemClass + " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
                     writer.WriteLine("  <Target_ItemID>" + weapon.Target_ItemID + "</Target_ItemID>");
                     writer.WriteLine("  <New_ItemID>-1</New_ItemID>");

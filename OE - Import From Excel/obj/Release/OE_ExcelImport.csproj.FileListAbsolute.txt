@@ -20,6 +20,11 @@ C:\Users\Marcin\Desktop\Outward - Mody Moje\Outward Enhanced - Import From Excel
 C:\Users\Marcin\Desktop\Outward - Mody Moje\Outward Enhanced - Import From Excel - WindowApp\OE - Import From Excel\OE - Import From Excel\bin\Release\OE - Import From Excel.application
 C:\Users\Marcin\Desktop\Outward - Mody Moje\Outward Enhanced - Import From Excel - WindowApp\OE - Import From Excel\OE - Import From Excel\obj\Release\OE - Import From Excel.exe.manifest
 C:\Users\Marcin\Desktop\Outward - Mody Moje\Outward Enhanced - Import From Excel - WindowApp\OE - Import From Excel\OE - Import From Excel\obj\Release\OE - Import From Excel.application
+C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\obj\Release\OE_ExcelImport.csproj.AssemblyReference.cache
+C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\obj\Release\OE_ExcelImport.Form1.resources
+C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\obj\Release\OE___Import_From_Excel.Properties.Resources.resources
+C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\obj\Release\OE_ExcelImport.csproj.GenerateResource.cache
+C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\obj\Release\OE_ExcelImport.csproj.CoreCompileInputs.cache
 C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\bin\Release\OE - Import From Excel.exe.config
 C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\bin\Release\OE - Import From Excel.exe.manifest
 C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\bin\Release\OE - Import From Excel.application
@@ -31,11 +36,6 @@ C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel
 C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\bin\Release\ClosedXML.xml
 C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\bin\Release\DocumentFormat.OpenXml.xml
 C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\bin\Release\ExcelNumberFormat.xml
-C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\obj\Release\OE_ExcelImport.csproj.AssemblyReference.cache
-C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\obj\Release\OE_ExcelImport.Form1.resources
-C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\obj\Release\OE___Import_From_Excel.Properties.Resources.resources
-C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\obj\Release\OE_ExcelImport.csproj.GenerateResource.cache
-C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\obj\Release\OE_ExcelImport.csproj.CoreCompileInputs.cache
 C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\obj\Release\OE - Import From Excel.exe.manifest
 C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\obj\Release\OE - Import From Excel.application
 C:\GRY\Visual Studio 2022 Projects\OE - Import From Excel\OE - Import From Excel\obj\Release\OE_ExcelImport.csproj.CopyComplete
