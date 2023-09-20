@@ -5,7 +5,8 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClosedXML.Excel;
-
+using DocumentFormat.OpenXml.Spreadsheet;
+using System.Net.Http.Headers;
 
 namespace OE_ExcelImport
 {
@@ -58,8 +59,7 @@ namespace OE_ExcelImport
                         if (headingName == "DMG 3") { SH.BaseDamage.Add(new SL_Damage { Damage = Convert.ToSingle(workingCell.CachedValue), Type = (string)workingCell_nextCell.CachedValue }); }
 
                         //OPTION 1 for StatsHolder fields - doesn't work, throws an error ('Object of type 'System.Single' cannot be converted to type 'System.Int32')
-
-                        //FieldInfo[] fields = typeof(SL_WeaponStats).GetFields();
+                        //System.Reflection.FieldInfo[] fields = typeof(SL_WeaponStats).GetFields();
                         //foreach (var field in fields)
                         //{
                         //    if (headingName == field.Name) { field.SetValue(StatsHolder, Convert.ToSingle(workingCell.CachedValue)); }
@@ -84,38 +84,81 @@ namespace OE_ExcelImport
                     }
                 }
 
-                IXLWorksheet ws_DmgOrRes;
-                if (wb.TryGetWorksheet("Damage_BonusOrRes", out ws_DmgOrRes))
-                //IXLWorksheet ws_DmgOrRes = wb.Worksheet("Damage_BonusOrRes");     //or this but first check if it exists
+                if (wb.TryGetWorksheet("AttackData", out IXLWorksheet ws_AttackData))
                 {
-                    var item_dmgBonus = ((SL_EquipmentStats)StatsHolder).Damage_Bonus;
-                    var item_dmgResistance = ((SL_EquipmentStats)StatsHolder).Damage_Resistance;
-
-                    for (int i = 1; i <= ws_DmgOrRes.RowsUsed().Count(); i++)
+                    //((SL_WeaponStats)StatsHolder).Attacks = new SL_WeaponStats.AttackData[5];
+                    var attacks = ((SL_WeaponStats)StatsHolder).Attacks = new SL_WeaponStats.AttackData[5];
+                    for (int i = 0; i < attacks.Length; i++)
                     {
-                        string itemName = ws_DmgOrRes.Cell(i, 1).CachedValue.ToString();
-                        if (string.IsNullOrEmpty(itemName)) { break; }
-                        else if (itemName == cell.CachedValue.ToString())
-                        {
-                            for (int j = 0; j < 6; j++)
-                            {
-                                if (!ws_DmgOrRes.Cell(i, j + 2).IsEmpty()) //y = array index; y+2 = column B in Excel
-                                {
-                                    item_dmgBonus[j] = Convert.ToSingle(ws_DmgOrRes.Cell(i, j + 2).CachedValue);
-                                }
-                                if (!ws_DmgOrRes.Cell(i, j + 8).IsEmpty()) //y+8 = column H where resistances begin
-                                {
-                                    item_dmgResistance[j] = Convert.ToSingle(ws_DmgOrRes.Cell(i, j + 8).CachedValue);
-                                    //The above line can also be: item_dmgResistance[j] = ws_DmgOrRes.Cell(i, j + 8).GetValue<float>();
-                                    //'Okreslone rzutowanie jest nieprawidowe' gdy powyższa linia to (WTF???): item_dmgResistance[j] = (float)ws_DmgOrRes.Cell(i, j + 8).CachedValue;
-                                }
+                        attacks[i] = new SL_WeaponStats.AttackData();
+                    }
 
+                    for (int i = 1; i <= ws_AttackData.RowsUsed().Count(); i++)
+                    {
+                        string weaponType = ws_AttackData.Cell(i, 1).CachedValue.ToString();
+                        
+                        if (weaponType == ws.Name)  //weaponType in ws_AttackData worksheet must be the same as the worksheet of the currently created SL_Weapon
+                        {
+                            for (int j = 0; j < 5; j++)    //for each attackData (there are 5, so 1-6) - each attack in different column
+                            {
+                                for (int k = 0; k < 4; k++) //4 AttackData fields (Damage, Knockback, AttackSpeed, StamCost) - each in different row
+                                {
+                                    //add k to the weaponType row (i), add j to the column number, starting with 2
+                                    float cellValue = Convert.ToSingle(ws_AttackData.Cell(i + k, 2 + j).CachedValue); 
+
+                                    if (k == 0) {   //Damage
+                                        foreach (SL_Damage dmg in SH.BaseDamage)
+                                        {
+                                            attacks[j].Damage.Add(dmg.Damage * cellValue);
+                                        }
+                                    }
+                                    else if (k == 1){  //Knockback
+                                        attacks[j].Knockback = SH.Impact * cellValue;
+                                    }
+                                    else if (k == 2) {  //AttackSpeed
+                                        attacks[j].AttackSpeed = SH.AttackSpeed * cellValue;
+                                    }
+                                    else if (k == 3) {  //StamCost
+                                        attacks[j].StamCost = SH.StamCost * cellValue;
+                                    }
+                                }
                             }
+                            break;
                         }
                     }
                 }
-                
 
+                //OPTION 2 - or go through this worksheet LoadExcelDataClosedXML method
+                //IXLWorksheet ws_DmgOrRes;
+                //if (wb.TryGetWorksheet("Damage_BonusOrRes", out ws_DmgOrRes))
+                ////IXLWorksheet ws_DmgOrRes = wb.Worksheet("Damage_BonusOrRes");     //or this but first check if it exists
+                //{
+                //    var item_dmgBonus = ((SL_EquipmentStats)StatsHolder).Damage_Bonus;
+                //    var item_dmgResistance = ((SL_EquipmentStats)StatsHolder).Damage_Resistance;
+
+                //    for (int i = 1; i <= ws_DmgOrRes.RowsUsed().Count(); i++)
+                //    {
+                //        string itemName = ws_DmgOrRes.Cell(i, 1).CachedValue.ToString();
+                //        if (string.IsNullOrEmpty(itemName)) { break; }
+                //        else if (itemName == cell.CachedValue.ToString())
+                //        {
+                //            for (int j = 0; j < 6; j++)
+                //            {
+                //                if (!ws_DmgOrRes.Cell(i, j + 2).IsEmpty()) //y = array index; y+2 = column B in Excel
+                //                {
+                //                    item_dmgBonus[j] = Convert.ToSingle(ws_DmgOrRes.Cell(i, j + 2).CachedValue);
+                //                }
+                //                if (!ws_DmgOrRes.Cell(i, j + 8).IsEmpty()) //y+8 = column H where resistances begin
+                //                {
+                //                    item_dmgResistance[j] = Convert.ToSingle(ws_DmgOrRes.Cell(i, j + 8).CachedValue);
+                //                    //The above line can also be: item_dmgResistance[j] = ws_DmgOrRes.Cell(i, j + 8).GetValue<float>();
+                //                    //'Okreslone rzutowanie jest nieprawidowe' gdy powyższa linia to (WTF???): item_dmgResistance[j] = (float)ws_DmgOrRes.Cell(i, j + 8).CachedValue;
+                //                }
+
+                //            }
+                //        }
+                //    }
+                //}
 
             }
         }
@@ -156,7 +199,7 @@ namespace OE_ExcelImport
                 public float StamCost;
                 public float Knockback;
                 public float AttackSpeed;
-                public List<float> Damage;
+                public List<float> Damage = new List<float>();
             }
         }
         #endregion
@@ -187,26 +230,26 @@ namespace OE_ExcelImport
 
             foreach (var worksheetName in Form1.worksheetsList)
             {
-                var ws = wb.Worksheet(worksheetName);
+                if (!wb.TryGetWorksheet(worksheetName, out IXLWorksheet ws)) { continue; }
+
+                for (int x = 2; x < ws.RowsUsed().Count(); x++)
                 {
-                    for (int x = 2; x < ws.RowsUsed().Count(); x++)
-                    {
-                        var cell = ws.Cell(x, 2);
-                        string cell_name = cell.Value.ToString();
+                    var cell = ws.Cell(x, 2);
+                    string cell_name = cell.Value.ToString();
 
-                        if (string.IsNullOrEmpty(cell_name)) { break; }
-                        else
-                        {
-                            dict_Weapons.Add(cell_name, new SL_Weapon(wb, ws, cell));
-                            dict_Weapons[cell_name].WeaponType = ws.Name;
-                        }
-                    }
+                    if (string.IsNullOrEmpty(cell_name)) { break; }
+                    dict_Weapons[cell_name] = new SL_Weapon(wb, ws, cell);
+                    dict_Weapons[cell_name].WeaponType = ws.Name;
                 }
-
             }
+
+            if (wb.TryGetWorksheet("Damage_BonusOrRes", out IXLWorksheet ws_DmgOrRes))
+            {
+                AddDamageOrResistanceToWeapons(ws_DmgOrRes);
+            }
+
+
             weaponsAddedToDictionary = true;
-
-
         }
         #endregion
 
@@ -267,21 +310,51 @@ namespace OE_ExcelImport
                     }
                     writer.WriteLine("      </BaseDamage>");
 
-                    //Damage Bonus
-                    writer.WriteLine("      <Damage_Bonus>");
-                    foreach (float bonus in mySH.Damage_Bonus)
-                    {
-                        writer.WriteLine("          <float>" + bonus + "</float>");
+                    //Exporting this data depends on whether the autoGenerateAttackData checkbox is checked or not
+                    if (Form1.autoGenerateAttackData) {
+                        writer.WriteLine("      <AutoGenerateAttackData>" + "true" + "</AutoGenerateAttackData>");
                     }
-                    writer.WriteLine("      </Damage_Bonus>");
+                    else {
+                        writer.WriteLine("      <AutoGenerateAttackData>" + "false" + "</AutoGenerateAttackData>");
+                        writer.WriteLine("      <Attacks>");
+                        foreach (var attackData in mySH.Attacks)
+                        {
+                            writer.WriteLine("          <AttackData>");
+                            writer.WriteLine("              <StamCost>" + attackData.StamCost + "</StamCost>");
+                            writer.WriteLine("              <Knockback>" + attackData.Knockback + "</Knockback>");
+                            writer.WriteLine("              <AttackSpeed>" + attackData.AttackSpeed + "</AttackSpeed>");
+                            writer.WriteLine("              <Damage>");
+                                foreach (float dmg in attackData.Damage)
+                                {
+                                    writer.WriteLine("                  <float>" + dmg + "</float>");
+                                }
+                            writer.WriteLine("              </Damage>");
+                            writer.WriteLine("          </AttackData>");
+                        }
+                        writer.WriteLine("      </Attacks>");
+                    }
 
-                    //Damage Res
-                    writer.WriteLine("      <Damage_Resistance>");
-                    foreach (float res in mySH.Damage_Resistance)
+                    //This data is only exported if the exportDmgBonusAndRes checkbox is checked
+                    if (Form1.exportDmgBonusAndRes)
                     {
-                        writer.WriteLine("          <float>" + res + "</float>");
+                        //Damage Bonus
+                        writer.WriteLine("      <Damage_Bonus>");
+                        foreach (float bonus in mySH.Damage_Bonus)
+                        {
+                            writer.WriteLine("          <float>" + bonus + "</float>");
+                        }
+                        writer.WriteLine("      </Damage_Bonus>");
+
+                        //Damage Res
+                        writer.WriteLine("      <Damage_Resistance>");
+                        foreach (float res in mySH.Damage_Resistance)
+                        {
+                            writer.WriteLine("          <float>" + res + "</float>");
+                        }
+                        writer.WriteLine("      </Damage_Resistance>");
                     }
-                    writer.WriteLine("      </Damage_Resistance>");
+
+                    
 
                     writer.WriteLine("  </StatsHolder>");
 
@@ -318,6 +391,34 @@ namespace OE_ExcelImport
             }
         }
 
+        static void AddDamageOrResistanceToWeapons(IXLWorksheet ws_DmgOrRes)
+        {
+            for (int i = 1; i <= ws_DmgOrRes.RowsUsed().Count(); i++)
+            {
+                string itemName = ws_DmgOrRes.Cell(i, 1).CachedValue.ToString();
+                if (string.IsNullOrEmpty(itemName)) { break; }
+
+                if (dict_Weapons.TryGetValue(itemName, out SL_Weapon weapon) == false) { continue; }
+
+                var item_dmgBonus = ((SL_EquipmentStats)weapon.StatsHolder).Damage_Bonus;
+                var item_dmgResistance = ((SL_EquipmentStats)weapon.StatsHolder).Damage_Resistance;
+
+                for (int j = 0; j < 6; j++)
+                {
+                    if (!ws_DmgOrRes.Cell(i, j + 2).IsEmpty()) //y = array index; y+2 = column B in Excel
+                    {
+                        item_dmgBonus[j] = Convert.ToSingle(ws_DmgOrRes.Cell(i, j + 2).CachedValue);
+                    }
+                    if (!ws_DmgOrRes.Cell(i, j + 8).IsEmpty()) //y+8 = column H where resistances begin
+                    {
+                        item_dmgResistance[j] = Convert.ToSingle(ws_DmgOrRes.Cell(i, j + 8).CachedValue);
+                        //The above line can also be: item_dmgResistance[j] = ws_DmgOrRes.Cell(i, j + 8).GetValue<float>();
+                        //'Okreslone rzutowanie jest nieprawidowe' gdy powyższa linia to (WTF???): item_dmgResistance[j] = (float)ws_DmgOrRes.Cell(i, j + 8).CachedValue;
+                    }
+
+                }
+            }
+        }
 
 
 

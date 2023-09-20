@@ -42,6 +42,8 @@ namespace OE_ExcelImport
             this.txt_onCbxChooseExportFolder = new System.Windows.Forms.TextBox();
             this.lbl_pleaseWait = new System.Windows.Forms.Label();
             this.chlb_worksheets = new System.Windows.Forms.CheckedListBox();
+            this.chbx_ExportDmgBonusAndRes = new System.Windows.Forms.CheckBox();
+            this.chbx_autoGenAttackData = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btn_import
@@ -56,7 +58,7 @@ namespace OE_ExcelImport
             this.btn_import.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_import.Font = new System.Drawing.Font("Monotype Corsiva", 22F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.btn_import.ForeColor = System.Drawing.Color.OldLace;
-            this.btn_import.Location = new System.Drawing.Point(131, 297);
+            this.btn_import.Location = new System.Drawing.Point(184, 271);
             this.btn_import.Margin = new System.Windows.Forms.Padding(0);
             this.btn_import.Name = "btn_import";
             this.btn_import.Size = new System.Drawing.Size(171, 43);
@@ -77,7 +79,7 @@ namespace OE_ExcelImport
             this.btn_ChooseFile.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btn_ChooseFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_ChooseFile.ForeColor = System.Drawing.Color.Transparent;
-            this.btn_ChooseFile.Location = new System.Drawing.Point(22, 169);
+            this.btn_ChooseFile.Location = new System.Drawing.Point(51, 176);
             this.btn_ChooseFile.Margin = new System.Windows.Forms.Padding(0);
             this.btn_ChooseFile.Name = "btn_ChooseFile";
             this.btn_ChooseFile.Size = new System.Drawing.Size(28, 28);
@@ -87,7 +89,7 @@ namespace OE_ExcelImport
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(162, 88);
+            this.progressBar1.Location = new System.Drawing.Point(195, 100);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(146, 23);
             this.progressBar1.TabIndex = 5;
@@ -99,7 +101,7 @@ namespace OE_ExcelImport
             this.lbl_ChooseFile.BackColor = System.Drawing.Color.Transparent;
             this.lbl_ChooseFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lbl_ChooseFile.ForeColor = System.Drawing.Color.OldLace;
-            this.lbl_ChooseFile.Location = new System.Drawing.Point(112, 147);
+            this.lbl_ChooseFile.Location = new System.Drawing.Point(141, 154);
             this.lbl_ChooseFile.Name = "lbl_ChooseFile";
             this.lbl_ChooseFile.Size = new System.Drawing.Size(258, 18);
             this.lbl_ChooseFile.TabIndex = 6;
@@ -112,7 +114,7 @@ namespace OE_ExcelImport
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.label1.ForeColor = System.Drawing.Color.OldLace;
-            this.label1.Location = new System.Drawing.Point(113, 212);
+            this.label1.Location = new System.Drawing.Point(142, 219);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(256, 18);
             this.label1.TabIndex = 9;
@@ -130,7 +132,7 @@ namespace OE_ExcelImport
             this.btn_chooseExportFolder.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.btn_chooseExportFolder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_chooseExportFolder.ForeColor = System.Drawing.Color.Transparent;
-            this.btn_chooseExportFolder.Location = new System.Drawing.Point(22, 234);
+            this.btn_chooseExportFolder.Location = new System.Drawing.Point(51, 241);
             this.btn_chooseExportFolder.Margin = new System.Windows.Forms.Padding(0);
             this.btn_chooseExportFolder.Name = "btn_chooseExportFolder";
             this.btn_chooseExportFolder.Size = new System.Drawing.Size(28, 28);
@@ -144,7 +146,7 @@ namespace OE_ExcelImport
             this.cbx_chooseFile.FormattingEnabled = true;
             this.cbx_chooseFile.IntegralHeight = false;
             this.cbx_chooseFile.ItemHeight = 15;
-            this.cbx_chooseFile.Location = new System.Drawing.Point(57, 173);
+            this.cbx_chooseFile.Location = new System.Drawing.Point(86, 180);
             this.cbx_chooseFile.MaxDropDownItems = 5;
             this.cbx_chooseFile.Name = "cbx_chooseFile";
             this.cbx_chooseFile.Size = new System.Drawing.Size(368, 23);
@@ -156,7 +158,7 @@ namespace OE_ExcelImport
             // 
             this.txt_onCbxChooseFile.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txt_onCbxChooseFile.Font = new System.Drawing.Font("Nirmala UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.txt_onCbxChooseFile.Location = new System.Drawing.Point(191, 176);
+            this.txt_onCbxChooseFile.Location = new System.Drawing.Point(220, 183);
             this.txt_onCbxChooseFile.Margin = new System.Windows.Forms.Padding(0);
             this.txt_onCbxChooseFile.Name = "txt_onCbxChooseFile";
             this.txt_onCbxChooseFile.Size = new System.Drawing.Size(100, 16);
@@ -169,7 +171,7 @@ namespace OE_ExcelImport
             // 
             this.cbx_chooseExportFolder.Font = new System.Drawing.Font("Nirmala UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.cbx_chooseExportFolder.FormattingEnabled = true;
-            this.cbx_chooseExportFolder.Location = new System.Drawing.Point(57, 238);
+            this.cbx_chooseExportFolder.Location = new System.Drawing.Point(86, 245);
             this.cbx_chooseExportFolder.Name = "cbx_chooseExportFolder";
             this.cbx_chooseExportFolder.Size = new System.Drawing.Size(368, 23);
             this.cbx_chooseExportFolder.TabIndex = 13;
@@ -180,7 +182,7 @@ namespace OE_ExcelImport
             // 
             this.txt_onCbxChooseExportFolder.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txt_onCbxChooseExportFolder.Font = new System.Drawing.Font("Nirmala UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.txt_onCbxChooseExportFolder.Location = new System.Drawing.Point(191, 241);
+            this.txt_onCbxChooseExportFolder.Location = new System.Drawing.Point(220, 248);
             this.txt_onCbxChooseExportFolder.Margin = new System.Windows.Forms.Padding(0);
             this.txt_onCbxChooseExportFolder.Name = "txt_onCbxChooseExportFolder";
             this.txt_onCbxChooseExportFolder.Size = new System.Drawing.Size(100, 16);
@@ -196,7 +198,7 @@ namespace OE_ExcelImport
             this.lbl_pleaseWait.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.lbl_pleaseWait.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.lbl_pleaseWait.ForeColor = System.Drawing.Color.OldLace;
-            this.lbl_pleaseWait.Location = new System.Drawing.Point(145, 54);
+            this.lbl_pleaseWait.Location = new System.Drawing.Point(178, 66);
             this.lbl_pleaseWait.Name = "lbl_pleaseWait";
             this.lbl_pleaseWait.Size = new System.Drawing.Size(177, 31);
             this.lbl_pleaseWait.TabIndex = 15;
@@ -205,7 +207,11 @@ namespace OE_ExcelImport
             // 
             // chlb_worksheets
             // 
+            this.chlb_worksheets.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(14)))), ((int)(((byte)(5)))), ((int)(((byte)(35)))));
+            this.chlb_worksheets.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.chlb_worksheets.CheckOnClick = true;
+            this.chlb_worksheets.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.chlb_worksheets.ForeColor = System.Drawing.Color.OldLace;
             this.chlb_worksheets.FormattingEnabled = true;
             this.chlb_worksheets.Items.AddRange(new object[] {
             "Swords_1h",
@@ -223,18 +229,49 @@ namespace OE_ExcelImport
             "Chakrams",
             "Daggers",
             "Pistols"});
-            this.chlb_worksheets.Location = new System.Drawing.Point(305, 272);
+            this.chlb_worksheets.Location = new System.Drawing.Point(0, 405);
+            this.chlb_worksheets.MultiColumn = true;
             this.chlb_worksheets.Name = "chlb_worksheets";
-            this.chlb_worksheets.Size = new System.Drawing.Size(120, 109);
+            this.chlb_worksheets.Size = new System.Drawing.Size(505, 60);
             this.chlb_worksheets.TabIndex = 16;
+            // 
+            // chbx_ExportDmgBonusAndRes
+            // 
+            this.chbx_ExportDmgBonusAndRes.AutoSize = true;
+            this.chbx_ExportDmgBonusAndRes.BackColor = System.Drawing.Color.Transparent;
+            this.chbx_ExportDmgBonusAndRes.Checked = true;
+            this.chbx_ExportDmgBonusAndRes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chbx_ExportDmgBonusAndRes.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.chbx_ExportDmgBonusAndRes.ForeColor = System.Drawing.Color.OldLace;
+            this.chbx_ExportDmgBonusAndRes.Location = new System.Drawing.Point(144, 343);
+            this.chbx_ExportDmgBonusAndRes.Name = "chbx_ExportDmgBonusAndRes";
+            this.chbx_ExportDmgBonusAndRes.Size = new System.Drawing.Size(257, 19);
+            this.chbx_ExportDmgBonusAndRes.TabIndex = 17;
+            this.chbx_ExportDmgBonusAndRes.Text = "Export Damage Bonuses and Resistances";
+            this.chbx_ExportDmgBonusAndRes.UseVisualStyleBackColor = false;
+            // 
+            // chbx_autoGenAttackData
+            // 
+            this.chbx_autoGenAttackData.AutoSize = true;
+            this.chbx_autoGenAttackData.BackColor = System.Drawing.Color.Transparent;
+            this.chbx_autoGenAttackData.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.chbx_autoGenAttackData.ForeColor = System.Drawing.Color.OldLace;
+            this.chbx_autoGenAttackData.Location = new System.Drawing.Point(144, 366);
+            this.chbx_autoGenAttackData.Name = "chbx_autoGenAttackData";
+            this.chbx_autoGenAttackData.Size = new System.Drawing.Size(250, 19);
+            this.chbx_autoGenAttackData.TabIndex = 18;
+            this.chbx_autoGenAttackData.Text = "Weapons Use Autogenerated Attack Data";
+            this.chbx_autoGenAttackData.UseVisualStyleBackColor = false;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.ClientSize = new System.Drawing.Size(464, 408);
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.ClientSize = new System.Drawing.Size(505, 465);
+            this.Controls.Add(this.chbx_autoGenAttackData);
+            this.Controls.Add(this.chbx_ExportDmgBonusAndRes);
             this.Controls.Add(this.chlb_worksheets);
             this.Controls.Add(this.lbl_pleaseWait);
             this.Controls.Add(this.btn_import);
@@ -274,6 +311,8 @@ namespace OE_ExcelImport
         private System.Windows.Forms.TextBox txt_onCbxChooseExportFolder;
         private System.Windows.Forms.Label lbl_pleaseWait;
         private System.Windows.Forms.CheckedListBox chlb_worksheets;
+        private System.Windows.Forms.CheckBox chbx_ExportDmgBonusAndRes;
+        private System.Windows.Forms.CheckBox chbx_autoGenAttackData;
     }
 }
 

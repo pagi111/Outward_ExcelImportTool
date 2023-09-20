@@ -19,6 +19,8 @@ namespace OE_ExcelImport
         public static string chosenFile;
         public static string destinationFolder;
         public static List<string> worksheetsList = new List<string>();
+        public static bool exportDmgBonusAndRes = true;
+        public static bool autoGenerateAttackData = false;
 
         public Form1()
         {
@@ -62,10 +64,18 @@ namespace OE_ExcelImport
             
             // simply start and await the loading task
             btn_import.Enabled = false;
+            
+            if (chbx_ExportDmgBonusAndRes.Checked) { exportDmgBonusAndRes = true; }
+            else { exportDmgBonusAndRes = false; }
+            if (chbx_autoGenAttackData.Checked) { autoGenerateAttackData = true; }
+            else { autoGenerateAttackData = false; }
+
             if (OE_ExcelImport.weaponsAddedToDictionary == true)
             {
-                if (MessageBox.Show("Data has already been imported and exported to the export folder. Do you want to do it again?", 
-                    "Data Already Exported", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (MessageBox.Show("Data has already been imported from Excel file. Do you want to do it again?" +
+                    "Yes: data will be imported again and exported to folder." +
+                    "No: data will NOT be imported again, but data from the last successful import will still be exported to folder", 
+                    "Data Already Imported", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     await Task.Run(() => OE_ExcelImport.LoadExcelDataClosedXML());
                 }

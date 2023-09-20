@@ -1,7 +1,8 @@
 Import Files History:
-C:\Users\Marcin\Downloads\Outward_Mod_Weapons_ValuesToImport.xlsx
 D:\Outward - r2modman\Mods\OutwardDe\profiles\Outward\BepInEx\plugins\Outward_Mod_Weapons.xlsx
+C:\Users\Marcin\Downloads\Outward_Mod_Weapons_ValuesToImport.xlsx
+C:\Users\Marcin\Desktop\Outward Modding\OutwardEnhanced_Weapons.xlsx
 
 Export Folders History:
-C:\Users\Marcin\Desktop\Nowy folder\Weapons\
 C:\Users\Marcin\Desktop\Outward - Mody Moje\Outward Enhanced - Import From Excel - WindowApp\Weapons\
+C:\Users\Marcin\Desktop\Nowy folder\Weapons\
