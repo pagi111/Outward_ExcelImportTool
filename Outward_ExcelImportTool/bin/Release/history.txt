@@ -1,0 +1,6 @@
+Import Files History:
+C:\Users\Marcin\Desktop\Outward Modding\OutwardEnhanced_Weapons.xlsx
+C:\Users\Marcin\Downloads\Outward_Mod_Weapons_ValuesToImport.xlsx
+
+Export Folders History:
+C:\Users\Marcin\Desktop\Nowy folder\Weapons\

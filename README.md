@@ -12,3 +12,6 @@ v.0.4:
 	- on: AutoGenerateAttackData is set to true in XML
 	- off: AutoGenerateAttackData is set to false in XML and AttackData is taken from the Excel file (each weapon type has it's own attacks pattern)
 - small visual changes
+
+v.0.5:
+- changed Project, Solution and some classes names
