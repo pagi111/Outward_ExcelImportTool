@@ -25,7 +25,7 @@ If you're planning to modify one or two weapons (or even ten), then probably it'
 1) download and unpack the file to whatever folder you want
 2) download the Excel file with weapons' stats
 3) open the app (double-click the Outward_ExcelImportTool.exe file in the unpacked folder)
-	- in the first textbox specify the path to the Excel file (you can click the magnifying glass icon next to the textbox to browse for the file)
+	- in the first textbox specify the path to the Excel file (you can click the magnifying glass icon next to the textbox to browse for the file; used paths are saved in history - file located in the program's folder - so that they can be quickly used later)
 	- in the second texbox specify the folder that the XML files will be exported to
 	- at the very bottom there are checkboxes with the names of weapon types (that correspond to the worksheets in the Excel file) - make sure the ones that you want to be exported are checked (normally you don't need to change anything, unless you only want to export certain weapon types)
 	- click 'Import Data' button and wait a little bit (loading bar should appear and it should take a few seconds to import everything)
