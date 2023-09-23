@@ -19,6 +19,7 @@ v.0.5:
 
 
 ---- WHY TO USE ----
+
 If you're planning to modify one or two weapons (or even ten), then probably it's not even worth it to download this program. But if you want to make modifications to a lot of weapons at once, then you probably know that opening each individual XML file (and creating it with SideLoader, first) takes way too much time. This is exactly what I had in mind and why I created this program. You can use the Excel file (already loaded with all - unless I omitted something - the weapons in Outward) to easily modify stats like damage, attack speed, stamina cost, weight, etc. of all the weapons you want (more on using the Excel file later) - it's much easier than editing XML file as you only need to edit cells in Excel. After saving and closing the Excel file, you can use this program to import all the data from the spreadsheets and export it as ready-to-use XML files.
 
 
@@ -34,6 +35,7 @@ If you're planning to modify one or two weapons (or even ten), then probably it'
 
 
 ---- HOW TO USE THE EXCEL FILE ----
+
 There are quite a few worksheets in the Excel file. Most of them correspond to weapon types and list all the weapons of that type that appear in the game. In each of those worksheets you can either manually modify weapons' stats or... you can use the first worksheet named 'GeneralValues' for that. 
 
 I wanted to make editing different weapons' stats fast and consistent and that's why this worksheet is there. In it, there are 3 tables: 
