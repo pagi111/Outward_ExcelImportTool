@@ -47,6 +47,7 @@ Each weapon in the weapon type worksheets use formulas to calculate their stats 
 
 
 ---- CHANGELOG ---- 
+
 v.0.3:
 - working version
 - importing data from Excel
