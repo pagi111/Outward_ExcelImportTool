@@ -2,6 +2,20 @@
 C# GUI app that facilitates the mod-making process for Outward. It reads through the Excel file that contains modded stats for weapons in the game (an example file is attached to the repository, but of course you can modify it), imports data from it and exports it by creating XML files that the game can use. 
 
 
+---- CURRENT FEATURES ---- 
+- modifying weapons' stats
+- modifying attack data for individual attacks based on weapon type
+- add damage and resistance bonuses to weapons
+
+
+---- FUTURE PLANS ---- 
+- add support for armour
+- change the way damage and resistance bonuses are edited in Excel
+- add support for status effects imposed by the weapons
+- MAYBE: add support for items such as potions, food, backpacks, etc. 
+
+
+
 ---- WHY TO USE ---- 
 
 If you're planning to modify one or two weapons (or even ten), then probably it's not even worth it to download this program. But if you want to make modifications to a lot of weapons at once, then you probably know that opening each individual XML file (and creating it with SideLoader, first) takes way too much time. This is exactly what I had in mind and why I created this program. You can use the Excel file (already loaded with all - unless I omitted something - the weapons in Outward) to easily modify stats like damage, attack speed, stamina cost, weight, etc. of all the weapons you want (more on using the Excel file later) - it's much easier than editing XML file as you only need to edit cells in Excel. After saving and closing the Excel file, you can use this program to import all the data from the spreadsheets and export it as ready-to-use XML files.
@@ -38,18 +52,6 @@ Each weapon in the weapon type worksheets use formulas to calculate their stats 
 - individual ATTACK DATA: if you want to modify each waepon type's individual attacks data (e.g. you think that the special attack (attack 3) of swords should deal more damage and cost less stamina - you can do that in the 'AttackData' worksheet (it's pretty self-explanatory: use only the first table - the other one lists vanilla values, you can modify Damage, Knockback, Attack Speed and Stamina Cost of each attack of each weapon type).
 - DAMAGE and RESISTANCE BONUSES: if you want to change what damage or resistance bonuses a certain weapon gives you, you need to do that in the 'Damage_BonusOrRes' worksheet. In the name column you need to enter the weapon's name (exactly as it appears in its corresponding weapon type worksheet - otherwise it won't work) and then specify the bonuses you want (leave the rest empty). NOTE: I don't think this is particularly convenient to modify these bonuses this way - I might change it in future releases.
 
-
----- CURRENT FEATURES ---- 
-- modifying weapons' stats
-- modifying attack data for individual attacks based on weapon type
-- add damage and resistance bonuses  to weapons
-
-
----- FUTURE PLANS ---- 
-- add support for armour
-- change the way damage and resistance bonuses are edited in Excel
-- add support for status effects imposed by the weapons
-- MAYBE: add support for items such as potions, food, backpacks, etc. 
 
 
 ---- CHANGELOG ---- 
