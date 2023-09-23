@@ -32,6 +32,11 @@ If you're planning to modify one or two weapons (or even ten), then probably it'
 4) put the exported files in your mod folder (your mod folder should be in SideLoader's plugins folder; of course you need to have SideLoader to use the files, but you probably already know that since you're making a mod :) )
 
 
+---- REQUIREMENTS ----
+In order to run the program requires .Net Framework 4.7.2 Runtime (https://dotnet.microsoft.com/en-us/download/dotnet-framework/net472)
+
+
+
 ---- HOW TO USE THE EXCEL FILE ----
 
 There are quite a few worksheets in the Excel file. Most of them correspond to weapon types and list all the weapons of that type that appear in the game. In each of those worksheets you can either manually modify weapons' stats or... you can use the first worksheet named 'GeneralValues' for that. 
