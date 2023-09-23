@@ -39,6 +39,12 @@ Each weapon in the weapon type worksheets use formulas to calculate their stats 
 - DAMAGE and RESISTANCE BONUSES: if you want to change what damage or resistance bonuses a certain weapon gives you, you need to do that in the 'Damage_BonusOrRes' worksheet. In the name column you need to enter the weapon's name (exactly as it appears in its corresponding weapon type worksheet - otherwise it won't work) and then specify the bonuses you want (leave the rest empty). NOTE: I don't think this is particularly convenient to modify these bonuses this way - I might change it in future releases.
 
 
+---- CURRENT FEATURES ---- 
+- modifying weapons' stats
+- modifying attack data for individual attacks based on weapon type
+- add damage and resistance bonuses  to weapons
+
+
 ---- FUTURE PLANS ---- 
 - add support for armour
 - change the way damage and resistance bonuses are edited in Excel
@@ -54,7 +60,7 @@ v.0.3:
 - exporting to the XML files
 
 v.0.4:
-- added import/export of Damage Bonuses and Resistances on Weapons; can be toggled on/off with a checkbox
+- added import/export of Damage and Resistance Bonuses on weapons; can be toggled on/off with a checkbox
 - added import/export of AttackData; AutoGenerateAttackData can be toggled on/off
 	- on: AutoGenerateAttackData is set to true in XML
 	- off: AutoGenerateAttackData is set to false in XML and AttackData is taken from the Excel file (each weapon type has it's own attacks pattern)
