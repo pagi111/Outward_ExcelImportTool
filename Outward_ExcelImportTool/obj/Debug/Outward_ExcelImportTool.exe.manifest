@@ -79,14 +79,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Outward_ExcelImportTool.exe" size="958376">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Outward_ExcelImportTool.exe" size="967080">
       <assemblyIdentity name="Outward_ExcelImportTool" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>fYTQ/1V8fZ2g3ihs1F7S83exC/ozfzJIW4yJkZWedW8=</dsig:DigestValue>
+        <dsig:DigestValue>l6+HNy6tFXLnsonzqGV5v01GAD4WBuaq/ia2Mz094Zk=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

@@ -4,6 +4,7 @@ C# GUI app that facilitates the mod-making process for Outward. It reads through
 
 ---- CURRENT FEATURES ---- 
 - modifying weapons' stats
+- modifying armour's stats
 - modifying attack data for individual attacks based on weapon type
 - add damage and resistance bonuses to weapons
 
@@ -30,6 +31,11 @@ If you're planning to modify one or two weapons (or even ten), then probably it'
 	- at the very bottom there are checkboxes with the names of weapon types (that correspond to the worksheets in the Excel file) - make sure the ones that you want to be exported are checked (normally you don't need to change anything, unless you only want to export certain weapon types)
 	- click 'Import Data' button and wait a little bit (loading bar should appear and it should take a few seconds to import everything)
 4) put the exported files in your mod folder (your mod folder should be in SideLoader's plugins folder; of course you need to have SideLoader to use the files, but you probably already know that since you're making a mod :) )
+
+
+---- REQUIREMENTS ----
+In order to run the program requires .Net Framework 4.7.2 Runtime (https://dotnet.microsoft.com/en-us/download/dotnet-framework/net472)
+
 
 
 ---- HOW TO USE THE EXCEL FILE ----
@@ -70,3 +76,6 @@ v.0.4:
 
 v.0.5:
 - changed Project, Solution and some classes names
+
+v.0.6:
+- added the possibility of modifying armour

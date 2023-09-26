@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Outward_ExcelImportTool
 {
@@ -15,82 +16,72 @@ namespace Outward_ExcelImportTool
         public class SL_Item
         {
             public SL_ItemStats StatsHolder;
-            public List<OE_Effect> Effects;
+            public List<OE_Effect> Effects = new List<OE_Effect>();
             public int New_ItemID;
             public int Target_ItemID;
             public string Name;
+            public string ItemType;
         }
         public class SL_Weapon : SL_Item
         {
-            public string WeaponType;
-            
             public SL_Weapon() { }
+
             //SL_Weapon constructor for ClosedXML
             public SL_Weapon(IXLWorkbook wb, IXLWorksheet ws, IXLCell cell)
             {
-                StatsHolder = new SL_WeaponStats
-                {
-                    Damage_Bonus = new float[9],
-                    Damage_Resistance = new float[9],
-                };
-                var SH = ((SL_WeaponStats)StatsHolder);
-                SH.BaseDamage = new List<SL_Damage>();
-                Effects = new List<OE_Effect>();
+                var SH = (SL_WeaponStats)(StatsHolder = new SL_WeaponStats());
+                ItemType = ws.Name;
 
                 for (int i = 1; i <= ws.ColumnsUsed().Count(); i++)
                 {
-                    var heading = ws.Cell(1, i);
-                    string headingName = heading.CachedValue.ToString();
+                    var colHeaderCell = ws.Cell(1, i);
+                    string colHeaderName = colHeaderCell.CachedValue.ToString();
 
-                    var workingCell = ws.Cell(cell.Address.RowNumber, heading.Address.ColumnNumber);
-                    var workingCell_nextCell = ws.Cell(cell.Address.RowNumber, heading.Address.ColumnNumber + 1);
+                    var workingCell = ws.Cell(cell.Address.RowNumber, colHeaderCell.Address.ColumnNumber);
+                    var workingCell_nextCell = ws.Cell(cell.Address.RowNumber, colHeaderCell.Address.ColumnNumber + 1);
 
-                    if (string.IsNullOrEmpty(headingName)) { break; }
-                    else if (string.IsNullOrEmpty(workingCell.CachedValue.ToString())) { continue; }
+                    if (string.IsNullOrEmpty(colHeaderName)) { break; }
+                    if (string.IsNullOrEmpty(workingCell.CachedValue.ToString())) { continue; }
+
+                    if (colHeaderName == "Name") { Name = (string)workingCell.CachedValue; }
+                    else if (colHeaderName == "ID") { Target_ItemID = New_ItemID = (int)Convert.ToSingle(workingCell.CachedValue); }
+
+                    else if (colHeaderName == "DMG Physical") { SH.BaseDamage.Add(new SL_Damage { Damage = Convert.ToSingle(workingCell.CachedValue), Type = "Physical" }); }
+                    else if (colHeaderName == "DMG 2") { SH.BaseDamage.Add(new SL_Damage { Damage = Convert.ToSingle(workingCell.CachedValue), Type = (string)workingCell_nextCell.CachedValue }); }
+                    else if (colHeaderName == "DMG 3") { SH.BaseDamage.Add(new SL_Damage { Damage = Convert.ToSingle(workingCell.CachedValue), Type = (string)workingCell_nextCell.CachedValue }); }
+
+                    //OPTION 1
                     else
                     {
-                        if (headingName == "Name") { Name = (string)workingCell.CachedValue; }
-                        if (headingName == "ID") { Target_ItemID = New_ItemID = (int)Convert.ToSingle(workingCell.CachedValue); }
-
-                        if (headingName == "DMG Physical") { SH.BaseDamage.Add(new SL_Damage { Damage = Convert.ToSingle(workingCell.CachedValue), Type = "Physical" }); }
-                        if (headingName == "DMG 2") { SH.BaseDamage.Add(new SL_Damage { Damage = Convert.ToSingle(workingCell.CachedValue), Type = (string)workingCell_nextCell.CachedValue }); }
-                        if (headingName == "DMG 3") { SH.BaseDamage.Add(new SL_Damage { Damage = Convert.ToSingle(workingCell.CachedValue), Type = (string)workingCell_nextCell.CachedValue }); }
-
-                        //OPTION 1 for StatsHolder fields - doesn't work, throws an error ('Object of type 'System.Single' cannot be converted to type 'System.Int32')
-                        //System.Reflection.FieldInfo[] fields = typeof(SL_WeaponStats).GetFields();
-                        //foreach (var field in fields)
-                        //{
-                        //    if (headingName == field.Name) { field.SetValue(StatsHolder, Convert.ToSingle(workingCell.CachedValue)); }
-                        //}
-
-
-                        //OPTION 2 for StatsHolder fields
-                        if (headingName == "MaxDurability") { SH.MaxDurability = (int)Convert.ToSingle(workingCell.CachedValue); }
-                        if (headingName == "RawWeight") { SH.RawWeight = Convert.ToSingle(workingCell.CachedValue); }
-                        if (headingName == "BaseValue") { SH.BaseValue = (int)Convert.ToSingle(workingCell.CachedValue); }
-
-                        if (headingName == "StamCost") { SH.StamCost = Convert.ToSingle(workingCell.CachedValue); }
-                        if (headingName == "AttackSpeed") { SH.AttackSpeed = Convert.ToSingle(workingCell.CachedValue); }
-                        if (headingName == "Impact") { SH.Impact = Convert.ToSingle(workingCell.CachedValue); }
-
-                        //Not working really well yet, but it's more about the Excel file than the code
-                        //if (headingName == "Effect 1" || headingName == "Effect 2" || headingName == "Effect 3")
-                        //{
-                        //    if (!string.IsNullOrEmpty(workingCell_nextCell.CachedValue.ToString()))
-                        //    { Effects.Add(new OE_Effect { StatusEffect = workingCell.CachedValue.ToString(), Buildup = (int)Convert.ToSingle(workingCell_nextCell.CachedValue) }); }
-                        //}
+                        foreach (var field in typeof(SL_WeaponStats).GetFields())
+                        {
+                            if (colHeaderName == field.Name) { field.SetValue(StatsHolder, Convert.ToSingle(workingCell.CachedValue)); break; }
+                        }
                     }
+
+                    //OPTION 2 for StatsHolder fields
+                    //else if (headingName == "MaxDurability") { SH.MaxDurability = Convert.ToSingle(workingCell.CachedValue); }
+                    //else if (headingName == "RawWeight") { SH.RawWeight = Convert.ToSingle(workingCell.CachedValue); }
+                    //else if (headingName == "BaseValue") { SH.BaseValue = Convert.ToSingle(workingCell.CachedValue); }
+
+                    //else if (headingName == "StamCost") { SH.StamCost = Convert.ToSingle(workingCell.CachedValue); }
+                    //else if (headingName == "AttackSpeed") { SH.AttackSpeed = Convert.ToSingle(workingCell.CachedValue); }
+                    //else if (headingName == "Impact") { SH.Impact = Convert.ToSingle(workingCell.CachedValue); }
+
+                    //Not working really well yet, but it's more about the Excel file than the code
+                    //if (headingName == "Effect 1" || headingName == "Effect 2" || headingName == "Effect 3")
+                    //{
+                    //    if (!string.IsNullOrEmpty(workingCell_nextCell.CachedValue.ToString()))
+                    //    { Effects.Add(new OE_Effect { StatusEffect = workingCell.CachedValue.ToString(), Buildup = (int)Convert.ToSingle(workingCell_nextCell.CachedValue) }); }
+                    //}
                 }
+
+                SH.MaxDurability = (float)Math.Round(SH.MaxDurability, 0, MidpointRounding.AwayFromZero);   //To make sure it's a whole number
+                SH.BaseValue = (float)Math.Round(SH.BaseValue, 0, MidpointRounding.AwayFromZero);           //To make sure it's a whole number
 
                 if (wb.TryGetWorksheet("AttackData", out IXLWorksheet ws_AttackData))
                 {
-                    //((SL_WeaponStats)StatsHolder).Attacks = new SL_WeaponStats.AttackData[5];
-                    var attacks = ((SL_WeaponStats)StatsHolder).Attacks = new SL_WeaponStats.AttackData[5];
-                    for (int i = 0; i < attacks.Length; i++)
-                    {
-                        attacks[i] = new SL_WeaponStats.AttackData();
-                    }
-
+                    var attacks = ((SL_WeaponStats)StatsHolder).Attacks;
                     for (int i = 1; i <= ws_AttackData.RowsUsed().Count(); i++)
                     {
                         string weaponType = ws_AttackData.Cell(i, 1).CachedValue.ToString();
@@ -161,6 +152,56 @@ namespace Outward_ExcelImportTool
             }
         }
 
+        public class SL_Armor : SL_Item
+        {
+            public SL_Armor(IXLWorkbook wb, IXLWorksheet ws, IXLCell cell)
+            {
+                var SH = (SL_EquipmentStats)(StatsHolder = new SL_EquipmentStats());
+                ItemType = ws.Name;
+
+                for (int i = 1; i <= ws.ColumnsUsed().Count(); i++)
+                {
+                    var colHeaderCell = ws.Cell(1, i);
+                    string colHeaderName = colHeaderCell.CachedValue.ToString();
+
+                    var workingCell = ws.Cell(cell.Address.RowNumber, i);
+                    var workingCell_nextCell = ws.Cell(cell.Address.RowNumber, i + 1);
+
+                    if (string.IsNullOrEmpty(colHeaderName)) { break; }
+                    if (string.IsNullOrEmpty(workingCell.CachedValue.ToString()) && colHeaderName != "Physical Resistance") { continue; }
+
+                    if (colHeaderName == "ID") { Target_ItemID = New_ItemID = (int)Convert.ToSingle(workingCell.CachedValue); }
+                    else if (colHeaderName == "Name") { Name = (string)workingCell.CachedValue; }
+
+                    else if (colHeaderName == "Physical Resistance") 
+                    { 
+                        for (int j = 0; j < 6; j++)
+                        {
+                            SH.Damage_Resistance[j] = Convert.ToSingle(ws.Cell(cell.Address.RowNumber, i + j).CachedValue);
+                        }
+                    }
+                    else if (colHeaderName == "Ethereal Resistance" || colHeaderName == "Decay Resistance" || colHeaderName == "Lightning Resistance"
+                         || colHeaderName == "Frost Resistance" || colHeaderName == "Fire Resistance" || colHeaderName == "Raw Resistance")
+                    {
+                        continue;
+                    }
+
+                    else
+                    {
+                        foreach (var field in typeof(SL_EquipmentStats).GetFields())
+                        {
+                            if (colHeaderName == field.Name) { field.SetValue(StatsHolder, Convert.ToSingle(workingCell.CachedValue)); break; }
+                        }
+                    }
+                }
+
+                SH.MaxDurability = (float)Math.Round(SH.MaxDurability, 0, MidpointRounding.AwayFromZero);   //To make sure it's a whole number
+                SH.BaseValue = (float)Math.Round(SH.BaseValue, 0, MidpointRounding.AwayFromZero);           //To make sure it's a whole number
+
+
+            }
+        }
+
 
         public class OE_Effect
         {
@@ -172,42 +213,77 @@ namespace Outward_ExcelImportTool
             public float Damage;
             public string Type;
         }
+        public class AttackData
+        {
+            public float StamCost;
+            public float Knockback;
+            public float AttackSpeed;
+            public List<float> Damage = new List<float>();
+        }
         public class SL_ItemStats
         {
-            public int BaseValue;
-            public float RawWeight; //Should be float but it doesn't read correctly from excel that way so I made it string
-            public int MaxDurability;
+            public float BaseValue;     //This should be int, but as float I can make a simpler function to import data; then I round it to whole numbers anyway
+            public float RawWeight; 
+            public float MaxDurability; //This should be int, but as float I can make a simpler function to import data; then I round it to whole numbers anyway
         }
         public class SL_EquipmentStats : SL_ItemStats
         {
             public float Impact_Resistance;
-            public float[] Damage_Bonus;
-            public float[] Damage_Resistance;
+            public float Damage_Protection;
+            public float BarrierProtection;
+            public float Stamina_Use_Penalty;
+            public float Movement_Penalty;
+            public float Mana_Use_Modifier;
+            public float Corruption_Protection;
+            public float Cooldown_Reduction;
+            public float Pouch_Bonus;
+            public float Heat_Protection;
+            public float Cold_Protection;
+            public float GlobalStatusEffectResistance;
+            public float Health_Regen;
+            public float StaminaRegenModifier;
+            public float Mana_Regen;
+            //Damage Types (used in Damage_Bonus and Damage_Resistance)
+            //0 = Physical
+            //1 = Ethereal
+            //2 = Decay
+            //3 = Electric
+            //4 = Frost
+            //5 = Fire
+            //6 = DarkOLD (unused)
+            //7 = LightOLD (unused)
+            //8 = Raw
+            public float[] Damage_Bonus = new float[9];
+            public float[] Damage_Resistance = new float[9];
         }
 
         public class SL_WeaponStats : SL_EquipmentStats
         {
-            public List<SL_Damage> BaseDamage;
+            public List<SL_Damage> BaseDamage = new List<SL_Damage>();
             public float StamCost;
             public float Impact;
             public float AttackSpeed; //Should be float but it doesn't read correctly from excel that way so I made it string
-            public AttackData[] Attacks;
-            public class AttackData
-            {
-                public float StamCost;
-                public float Knockback;
-                public float AttackSpeed;
-                public List<float> Damage = new List<float>();
-            }
+            public AttackData[] Attacks = new AttackData[5] { new AttackData(), new AttackData(), new AttackData(), new AttackData(), new AttackData() };
+            
         }
         #endregion
 
         static Dictionary<string, SL_Weapon> dict_Weapons = new Dictionary<string, SL_Weapon>();
+        static Dictionary<string, SL_Armor> dict_Armor = new Dictionary<string, SL_Armor>();
+        static Dictionary<string, SL_Item> dict_Items = new Dictionary<string, SL_Item>();
         public static bool weaponsAddedToDictionary = false;
+        public static bool armorAddedToDictionary = false;
 
         #region Importing Excel: ClosedXML
+        public enum EquipmentType
+        {
+            Weapons,
+            Armour
+        }
+        
+        
         //This is the best solution. By far the fastest and reasonable to use (IronXL may be a little more convenient to use, but it's paid and slower).
-        static public void LoadExcelDataClosedXML()
+        static public void LoadExcelDataClosedXML(EquipmentType equipmentType, string filepath)
         {
             //Normally floats are imported as numbers with a comma, e.g. 12,5 rather than 12.5
             //Everywhere else in the code, the correct format is 12.5
@@ -218,7 +294,7 @@ namespace Outward_ExcelImportTool
 
             XLWorkbook wb;
             try {
-                wb = new XLWorkbook(Form1.chosenFile);
+                wb = new XLWorkbook(filepath);
             }
             catch (IOException) {
                 MessageBox.Show("The program could not open the specified Excel file. " +
@@ -226,7 +302,11 @@ namespace Outward_ExcelImportTool
                 return;
             }
 
-            foreach (var worksheetName in Form1.worksheetsList)
+            List<string> worksheetsList;
+            if (equipmentType == EquipmentType.Weapons) { worksheetsList = Form1.worksheetsList_Weapons; }
+            else /* if (equipmentType == EquipmentType.Armour) */ { worksheetsList = Form1.worksheetsList_Armor; }
+
+            foreach (var worksheetName in worksheetsList)
             {
                 if (!wb.TryGetWorksheet(worksheetName, out IXLWorksheet ws)) { continue; }
 
@@ -236,113 +316,138 @@ namespace Outward_ExcelImportTool
                     string cell_name = cell.Value.ToString();
 
                     if (string.IsNullOrEmpty(cell_name)) { break; }
-                    dict_Weapons[cell_name] = new SL_Weapon(wb, ws, cell);
-                    dict_Weapons[cell_name].WeaponType = ws.Name;
+                    
+                    if (equipmentType == EquipmentType.Weapons)
+                    {
+                        //dict_Weapons[cell_name] = new SL_Weapon(wb, ws, cell);
+                        dict_Items[cell_name] = new SL_Weapon(wb, ws, cell);
+                    }
+                    else if (equipmentType == EquipmentType.Armour)
+                    {
+                        dict_Items[cell_name] = new SL_Armor(wb, ws, cell);
+                    }
                 }
             }
 
             if (wb.TryGetWorksheet("Damage_BonusOrRes", out IXLWorksheet ws_DmgOrRes))
             {
-                AddDamageOrResistanceToWeapons(ws_DmgOrRes);
+                if (equipmentType == EquipmentType.Weapons)
+                {
+                    AddDamageOrResistanceToWeapons(ws_DmgOrRes);
+                }
             }
 
-
-            weaponsAddedToDictionary = true;
+            if (equipmentType == EquipmentType.Weapons)
+            {
+                weaponsAddedToDictionary = true;
+            }
+            else if (equipmentType == EquipmentType.Armour)
+            {
+                armorAddedToDictionary = true;
+            }
         }
         #endregion
 
-
+        
         static public void WriteToXML()
         {
-            Dictionary<string, SL_Weapon>.ValueCollection melee_weapons = dict_Weapons.Values;
-            foreach (SL_Weapon weapon in melee_weapons)
+            //Dictionary<string, SL_Weapon>.ValueCollection melee_weapons = dict_Weapons.Values;
+            foreach (SL_Item item in dict_Items.Values)
             {
                 string itemClass;
-                if (weapon.WeaponType == "Bows" || weapon.WeaponType == "Pistols")
-                { itemClass = "SL_ProjectileWeapon"; }
-                else if (weapon.WeaponType == "Gauntlets")
-                { itemClass = "SL_DualMeleeWeapon"; }
-                else { itemClass = "SL_MeleeWeapon"; }
+                string statsHolderType;
+                if (item.ItemType == "Bows" || item.ItemType == "Pistols")
+                { itemClass = "SL_ProjectileWeapon"; statsHolderType = "\"SL_WeaponStats\""; }
+                else if (item.ItemType == "Gauntlets")
+                { itemClass = "SL_DualMeleeWeapon"; statsHolderType = "\"SL_WeaponStats\""; }
+                else if (item.ItemType == "Body" || item.ItemType == "Helmets" || item.ItemType == "Boots")
+                { itemClass = "SL_Armor"; statsHolderType = "\"SL_EquipmentStats\""; }
+                else { itemClass = "SL_MeleeWeapon"; statsHolderType = "\"SL_WeaponStats\""; }
 
-                var mySH = ((SL_WeaponStats)weapon.StatsHolder);
+                SL_EquipmentStats mySH = (SL_EquipmentStats)item.StatsHolder;
                 //string baseDir = AppDomain.CurrentDomain.BaseDirectory; //The application's base directory - points to ...\bin\Debug\netcoreapp3.1\
                 //string dir = @"C:\Users\Marcin\Desktop\Outward - Mody Moje\Outward Enhanced - Import From Excel - WindowApp\Weapons\";
                 string dir = Form1.destinationFolder;
-                System.IO.Directory.CreateDirectory(dir); //Create the dir if doesn't exist
-                string path = (weapon.WeaponType + "_" + weapon.Name + ".xml").Replace(":", "-"); //Path to individual files
+                string itemTypeFolder = item.GetType() == typeof(SL_Weapon) ? "Weapons\\" : "Armor\\";
+                System.IO.Directory.CreateDirectory(dir + itemTypeFolder); //Create the dir if doesn't exist
+                string fileName = (item.ItemType + "_" + item.Name + ".xml").Replace(":", "-"); //Path to individual files
+                
 
-                using (StreamWriter writer = new StreamWriter(dir + path))
+
+                using (StreamWriter writer = new StreamWriter(dir + itemTypeFolder + fileName))
                 {
                     writer.WriteLine("<?xml version=\"1.0\"?>");
                     writer.WriteLine("<" + itemClass + " xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
-                    writer.WriteLine("  <Target_ItemID>" + weapon.Target_ItemID + "</Target_ItemID>");
+                    writer.WriteLine("  <Target_ItemID>" + item.Target_ItemID + "</Target_ItemID>");
                     writer.WriteLine("  <New_ItemID>-1</New_ItemID>");
-                    writer.WriteLine("  <Name>" + weapon.Name + "</Name>");
+                    writer.WriteLine("  <Name>" + item.Name + "</Name>");
 
-                    writer.WriteLine("  <StatsHolder xsi:type=\"SL_WeaponStats\">");
-                    writer.WriteLine("      <BaseValue>" + mySH.BaseValue + "</BaseValue>");
-                    writer.WriteLine("      <RawWeight>" + mySH.RawWeight + "</RawWeight>");
-                    writer.WriteLine("      <MaxDurability>" + mySH.MaxDurability + "</MaxDurability>");
-                    writer.WriteLine("      <Impact>" + mySH.Impact + "</Impact>");
-                    writer.WriteLine("      <StamCost>" + mySH.StamCost + "</StamCost>");
+                    writer.WriteLine("  <StatsHolder xsi:type=" + statsHolderType + ">");
 
-                    if (weapon.WeaponType == "Shields")
+                    foreach (var field in typeof(SL_ItemStats).GetFields())
                     {
-                        writer.WriteLine("      <Impact_Resistance>" + mySH.AttackSpeed + "</Impact_Resistance>"); //Shields always have AttackSpeed = 0; this column is used for ImpactResistance instead
+                        writer.WriteLine("      <" + field.Name + ">" + field.GetValue(mySH).ToString() + "</" + field.Name + ">");
                     }
-                    else
+                    foreach (var field in typeof(SL_EquipmentStats).GetFields())
                     {
-                        writer.WriteLine("      <AttackSpeed>" + mySH.AttackSpeed + "</AttackSpeed>");
+                        //To keep things in the right order (first ItemStats, then EquipmentStats, then WeaponStats)
+                        //If I just iterate over field in typeof(SL_WeaponStats) right away, then the order in which the fields appear is
+                        //first fields from WeaponStats, then EquipmentStats, then ItemStats - that's not super important but still :) 
+                        if (field.DeclaringType == typeof(SL_ItemStats)) { continue; } 
+                        if (field.Name == "Damage_Bonus" || field.Name == "Damage_Resistance")  {  continue;  }
+                        writer.WriteLine("      <" + field.Name + ">" + field.GetValue(mySH).ToString() + "</" + field.Name + ">");
                     }
 
-                    writer.WriteLine("      <BaseDamage>");
-                    foreach (SL_Damage dmg in mySH.BaseDamage)
+                    if (item.GetType() == typeof(SL_Weapon))
                     {
-                        if (dmg.Damage > 0)
+                        writer.WriteLine("      <StamCost>" + ((SL_WeaponStats)mySH).StamCost + "</StamCost>");
+                        writer.WriteLine("      <Impact>" + ((SL_WeaponStats)mySH).Impact + "</Impact>");
+                        writer.WriteLine("      <AttackSpeed>" + ((SL_WeaponStats)mySH).AttackSpeed + "</AttackSpeed>");
+
+                        writer.WriteLine("      <BaseDamage>");
+                        foreach (SL_Damage dmg in ((SL_WeaponStats)mySH).BaseDamage)
                         {
-                            writer.WriteLine("          <SL_Damage>");
-                            writer.WriteLine("              <Damage>" + dmg.Damage + "</Damage>");
-                            writer.WriteLine("              <Type>" + dmg.Type + "</Type>");
-                            writer.WriteLine("          </SL_Damage>");
+                            if (dmg.Damage > 0)
+                            {
+                                writer.WriteLine("          <SL_Damage>");
+                                writer.WriteLine("              <Damage>" + dmg.Damage + "</Damage>");
+                                writer.WriteLine("              <Type>" + dmg.Type + "</Type>");
+                                writer.WriteLine("          </SL_Damage>");
+                            }
                         }
-                    }
-                    writer.WriteLine("      </BaseDamage>");
+                        writer.WriteLine("      </BaseDamage>");
 
-                    //Exporting this data depends on whether the autoGenerateAttackData checkbox is checked or not
-                    if (Form1.autoGenerateAttackData) {
-                        writer.WriteLine("      <AutoGenerateAttackData>" + "true" + "</AutoGenerateAttackData>");
-                    }
-                    else {
-                        writer.WriteLine("      <AutoGenerateAttackData>" + "false" + "</AutoGenerateAttackData>");
-                        writer.WriteLine("      <Attacks>");
-                        foreach (var attackData in mySH.Attacks)
+                        //Exporting this data depends on whether the autoGenerateAttackData checkbox is checked or not
+                        if (Form1.autoGenerateAttackData)
                         {
-                            writer.WriteLine("          <AttackData>");
-                            writer.WriteLine("              <StamCost>" + attackData.StamCost + "</StamCost>");
-                            writer.WriteLine("              <Knockback>" + attackData.Knockback + "</Knockback>");
-                            writer.WriteLine("              <AttackSpeed>" + attackData.AttackSpeed + "</AttackSpeed>");
-                            writer.WriteLine("              <Damage>");
+                            writer.WriteLine("      <AutoGenerateAttackData>" + "true" + "</AutoGenerateAttackData>");
+                        }
+                        else
+                        {
+                            writer.WriteLine("      <AutoGenerateAttackData>" + "false" + "</AutoGenerateAttackData>");
+                            writer.WriteLine("      <Attacks>");
+                            foreach (var attackData in ((SL_WeaponStats)mySH).Attacks)
+                            {
+                                writer.WriteLine("          <AttackData>");
+                                writer.WriteLine("              <StamCost>" + attackData.StamCost + "</StamCost>");
+                                writer.WriteLine("              <Knockback>" + attackData.Knockback + "</Knockback>");
+                                writer.WriteLine("              <AttackSpeed>" + attackData.AttackSpeed + "</AttackSpeed>");
+                                writer.WriteLine("              <Damage>");
                                 foreach (float dmg in attackData.Damage)
                                 {
                                     writer.WriteLine("                  <float>" + dmg + "</float>");
                                 }
-                            writer.WriteLine("              </Damage>");
-                            writer.WriteLine("          </AttackData>");
+                                writer.WriteLine("              </Damage>");
+                                writer.WriteLine("          </AttackData>");
+                            }
+                            writer.WriteLine("      </Attacks>");
                         }
-                        writer.WriteLine("      </Attacks>");
                     }
+                    
 
                     //This data is only exported if the exportDmgBonusAndRes checkbox is checked
                     if (Form1.exportDmgBonusAndRes)
                     {
-                        //Damage Bonus
-                        writer.WriteLine("      <Damage_Bonus>");
-                        foreach (float bonus in mySH.Damage_Bonus)
-                        {
-                            writer.WriteLine("          <float>" + bonus + "</float>");
-                        }
-                        writer.WriteLine("      </Damage_Bonus>");
-
                         //Damage Res
                         writer.WriteLine("      <Damage_Resistance>");
                         foreach (float res in mySH.Damage_Resistance)
@@ -350,9 +455,15 @@ namespace Outward_ExcelImportTool
                             writer.WriteLine("          <float>" + res + "</float>");
                         }
                         writer.WriteLine("      </Damage_Resistance>");
+                        
+                        //Damage Bonus
+                        writer.WriteLine("      <Damage_Bonus>");
+                        foreach (float bonus in mySH.Damage_Bonus)
+                        {
+                            writer.WriteLine("          <float>" + bonus + "</float>");
+                        }
+                        writer.WriteLine("      </Damage_Bonus>");
                     }
-
-                    
 
                     writer.WriteLine("  </StatsHolder>");
 
@@ -367,7 +478,7 @@ namespace Outward_ExcelImportTool
 
                     // => is called lambda expression. I don't fully understand it yet, but here it seems to mean sth like this:
                     // if (weapon.Effects contains Any OE_Effect 'a' such that a.StatusEffect is not empty or null) { ...do sth... }
-                    if (weapon.Effects.Any(a => !string.IsNullOrEmpty(a.StatusEffect)))
+                    if (item.Effects.Any(a => !string.IsNullOrEmpty(a.StatusEffect)))
                     {
                         writer.WriteLine("  <EffectTransforms>");
                         writer.WriteLine("      <SL_EffectTransform>");
@@ -376,7 +487,7 @@ namespace Outward_ExcelImportTool
                         writer.WriteLine("          <Rotation xsi:nil=\"true\" /> ");
                         writer.WriteLine("          <Scale xsi:nil=\"true\" /> ");
                         writer.WriteLine("          <Effects>");
-                        foreach (var effect in weapon.Effects)
+                        foreach (var effect in item.Effects)
                         {
                             if (!string.IsNullOrEmpty(effect.StatusEffect))
                             {
@@ -403,7 +514,7 @@ namespace Outward_ExcelImportTool
                 string itemName = ws_DmgOrRes.Cell(i, 1).CachedValue.ToString();
                 if (string.IsNullOrEmpty(itemName)) { break; }
 
-                if (dict_Weapons.TryGetValue(itemName, out SL_Weapon weapon) == false) { continue; }
+                if (dict_Items.TryGetValue(itemName, out SL_Item weapon) == false) { continue; }
 
                 var item_dmgBonus = ((SL_EquipmentStats)weapon.StatsHolder).Damage_Bonus;
                 var item_dmgResistance = ((SL_EquipmentStats)weapon.StatsHolder).Damage_Resistance;

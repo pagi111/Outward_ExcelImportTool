@@ -19,3 +19,24 @@ C:\Users\Marcin\Desktop\Outward Modding\Outward_ExcelImportTool - v.0.5\Outward_
 C:\Users\Marcin\Desktop\Outward Modding\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\obj\Debug\Outward_ExcelImportTool.csproj.CopyComplete
 C:\Users\Marcin\Desktop\Outward Modding\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\obj\Debug\Outward_ExcelImportTool.exe
 C:\Users\Marcin\Desktop\Outward Modding\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\obj\Debug\Outward_ExcelImportTool.pdb
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\bin\Debug\Outward_ExcelImportTool.exe.config
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\bin\Debug\Outward_ExcelImportTool.exe.manifest
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\bin\Debug\Outward_ExcelImportTool.application
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\bin\Debug\Outward_ExcelImportTool.exe
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\bin\Debug\Outward_ExcelImportTool.pdb
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\bin\Debug\ClosedXML.dll
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\bin\Debug\ExcelNumberFormat.dll
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\bin\Debug\ClosedXML.pdb
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\bin\Debug\ClosedXML.xml
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\bin\Debug\DocumentFormat.OpenXml.xml
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\bin\Debug\ExcelNumberFormat.xml
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\obj\Debug\Outward_ExcelImportTool.csproj.AssemblyReference.cache
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\obj\Debug\Outward_ExcelImportTool.Form1.resources
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\obj\Debug\Outward_ExcelImportTool.Properties.Resources.resources
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\obj\Debug\Outward_ExcelImportTool.csproj.GenerateResource.cache
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\obj\Debug\Outward_ExcelImportTool.csproj.CoreCompileInputs.cache
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\obj\Debug\Outward_ExcelImportTool.exe.manifest
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\obj\Debug\Outward_ExcelImportTool.application
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\obj\Debug\Outward_ExcelImportTool.csproj.CopyComplete
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\obj\Debug\Outward_ExcelImportTool.exe
+C:\GRY\Visual Studio 2022 Projects\Outward_ExcelImportTool - v.0.5\Outward_ExcelImportTool\obj\Debug\Outward_ExcelImportTool.pdb

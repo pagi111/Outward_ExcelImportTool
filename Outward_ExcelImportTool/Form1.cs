@@ -8,11 +8,14 @@ namespace Outward_ExcelImportTool
 {
     public partial class Form1 : Form
     {
-        List<string> listImportFilesHistory = new List<string>();
+        List<string> listImportFilesHistory_Weapons = new List<string>();
+        List<string> listImportFilesHistory_Armor = new List<string>();
         List<string> listExportFoldersHistory = new List<string>();
-        public static string chosenFile;
+        public static string excelFile_Weapons;
+        public static string excelFile_Armor;
         public static string destinationFolder;
-        public static List<string> worksheetsList = new List<string>();
+        public static List<string> worksheetsList_Weapons = new List<string>();
+        public static List<string> worksheetsList_Armor = new List<string>();
         public static bool exportDmgBonusAndRes = true;
         public static bool autoGenerateAttackData = false;
 
@@ -27,16 +30,20 @@ namespace Outward_ExcelImportTool
             InitTimer();
             ReadHistoryFile();
 
-            for (int i = 0; i < chlb_worksheets.Items.Count; i++)
+            for (int i = 0; i < chlb_worksheetsWeapons.Items.Count; i++)
             {
-                chlb_worksheets.SetItemChecked(i, true);
+                chlb_worksheetsWeapons.SetItemChecked(i, true);
+            }
+            for (int i = 0; i < chlb_worksheetsArmor.Items.Count; i++)
+            {
+                chlb_worksheetsArmor.SetItemChecked(i, true);
             }
         }
 
         private async void btn_import_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(cbx_chooseFile.Text)) {
-                MessageBox.Show("Enter the path for the Excel file");
+            if (string.IsNullOrEmpty(excelFile_Weapons) && string.IsNullOrEmpty(excelFile_Armor)) {
+                MessageBox.Show("Enter the path for at least one Excel file");
                 return;
             }
             if (string.IsNullOrEmpty(cbx_chooseExportFolder.Text)) {
@@ -44,10 +51,15 @@ namespace Outward_ExcelImportTool
                 return;
             }
             
-            worksheetsList.Clear();
-            foreach (var item in chlb_worksheets.CheckedItems)
+            worksheetsList_Weapons.Clear();
+            worksheetsList_Armor.Clear();
+            foreach (var item in chlb_worksheetsWeapons.CheckedItems)
             {
-                worksheetsList.Add(item.ToString());
+                worksheetsList_Weapons.Add(item.ToString());
+            }
+            foreach (var item in chlb_worksheetsArmor.CheckedItems)
+            {
+                worksheetsList_Armor.Add(item.ToString());
             }
 
             //SO thread on waiting animations: https://stackoverflow.com/questions/36076924/how-can-i-display-a-loading-control-while-a-process-is-waiting-for-be-finished
@@ -64,20 +76,42 @@ namespace Outward_ExcelImportTool
             if (chbx_autoGenAttackData.Checked) { autoGenerateAttackData = true; }
             else { autoGenerateAttackData = false; }
 
-            if (ExcelImport.weaponsAddedToDictionary == true)
+            if (!string.IsNullOrEmpty(excelFile_Weapons))
             {
-                if (MessageBox.Show("Data has already been imported from Excel file. Do you want to do it again?" +
-                    "Yes: data will be imported again and exported to folder." +
-                    "No: data will NOT be imported again, but data from the last successful import will still be exported to folder", 
-                    "Data Already Imported", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (ExcelImport.weaponsAddedToDictionary == true)
                 {
-                    await Task.Run(() => ExcelImport.LoadExcelDataClosedXML());
+                    if (MessageBox.Show("Weapons have already been imported from Excel file. Do you want to do it again? \n" +
+                        "Yes: data will be imported again and exported to folder. \n" +
+                        "No: data will NOT be imported again, but data from the last successful import will still be exported to folder",
+                        "Weapons Already Imported", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        await Task.Run(() => ExcelImport.LoadExcelDataClosedXML(ExcelImport.EquipmentType.Weapons, excelFile_Weapons));
+                    }
+                }
+                else
+                {
+                    await Task.Run(() => ExcelImport.LoadExcelDataClosedXML(ExcelImport.EquipmentType.Weapons, excelFile_Weapons));
                 }
             }
-            else
+
+            if (!string.IsNullOrEmpty(excelFile_Armor))
             {
-                await Task.Run(() => ExcelImport.LoadExcelDataClosedXML());
+                if (ExcelImport.armorAddedToDictionary == true)
+                {
+                    if (MessageBox.Show("Armour have already been imported from Excel file. Do you want to do it again? \n" +
+                        "Yes: data will be imported again and exported to folder. \n" +
+                        "No: data will NOT be imported again, but data from the last successful import will still be exported to folder",
+                        "Armour Already Imported", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        await Task.Run(() => ExcelImport.LoadExcelDataClosedXML(ExcelImport.EquipmentType.Armour, excelFile_Armor));
+                    }
+                }
+                else
+                {
+                    await Task.Run(() => ExcelImport.LoadExcelDataClosedXML(ExcelImport.EquipmentType.Armour, excelFile_Armor));
+                }
             }
+
             await Task.Run(() => ExcelImport.WriteToXML());
             
             // re-enable things
@@ -87,28 +121,49 @@ namespace Outward_ExcelImportTool
         }
         
         
-        private void btn_ChooseFile_Click(object sender, EventArgs e) 
+        private void btn_ChooseFileWeapons_Click(object sender, EventArgs e) 
         {
             OpenFileDialog chooseFile = new OpenFileDialog();
             chooseFile.Filter = "Excel files | *.xlsx; *.xlsm; *.xltx; *.xltm";
 
-            
+            if (chooseFile.ShowDialog() == DialogResult.OK)
+            {
+                cbx_chooseFileWeapons.Text = chooseFile.FileName;
+                ChooseFileWeapons_AddToHistory();
+                excelFile_Weapons = cbx_chooseFileWeapons.Text;
+            }
+        }
+
+        private void btn_ChooseFileArmor_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog chooseFile = new OpenFileDialog();
+            chooseFile.Filter = "Excel files | *.xlsx; *.xlsm; *.xltx; *.xltm";
 
             if (chooseFile.ShowDialog() == DialogResult.OK)
             {
-                cbx_chooseFile.Text = chooseFile.FileName;
-                ChooseFile_AddToHistory();
-                chosenFile = cbx_chooseFile.Text;
+                cbx_chooseFileArmor.Text = chooseFile.FileName;
+                ChooseFileArmor_AddToHistory();
+                excelFile_Armor = cbx_chooseFileArmor.Text;
             }
         }
-        
-        private void ChooseFile_AddToHistory()
+
+        private void ChooseFileWeapons_AddToHistory()
         {
             bool fileNameAlreadyExists = false;
-            foreach (var item in cbx_chooseFile.Items) {
-                if (item.ToString() == cbx_chooseFile.Text) { fileNameAlreadyExists = true; }
+            foreach (var item in cbx_chooseFileWeapons.Items) {
+                if (item.ToString() == cbx_chooseFileWeapons.Text) { fileNameAlreadyExists = true; }
             }
-            if (!fileNameAlreadyExists) {  cbx_chooseFile.Items.Add(cbx_chooseFile.Text);  }
+            if (!fileNameAlreadyExists) {  cbx_chooseFileWeapons.Items.Add(cbx_chooseFileWeapons.Text);  }
+        }
+
+        private void ChooseFileArmor_AddToHistory()
+        {
+            bool fileNameAlreadyExists = false;
+            foreach (var item in cbx_chooseFileArmor.Items)
+            {
+                if (item.ToString() == cbx_chooseFileArmor.Text) { fileNameAlreadyExists = true; }
+            }
+            if (!fileNameAlreadyExists) { cbx_chooseFileArmor.Items.Add(cbx_chooseFileArmor.Text); }
         }
 
         private void ChooseFolder_AddToHistory()
@@ -125,9 +180,9 @@ namespace Outward_ExcelImportTool
         {
             FolderBrowserDialog chooseFolder = new FolderBrowserDialog();
             if (chooseFolder.ShowDialog() == DialogResult.OK) {
-                cbx_chooseExportFolder.Text = chooseFolder.SelectedPath + @"\Weapons\";
+                cbx_chooseExportFolder.Text = chooseFolder.SelectedPath; // + @"\Weapons\";
                 ChooseFolder_AddToHistory();
-                destinationFolder = cbx_chooseExportFolder.Text;
+                //destinationFolder = cbx_chooseExportFolder.Text;
             }
         }
 
@@ -139,23 +194,30 @@ namespace Outward_ExcelImportTool
         
 
 
-        private void txt_onCbxChooseFile_MouseClick(object sender, MouseEventArgs e)
+        private void txt_onCbxChooseFileWeapons_MouseClick(object sender, MouseEventArgs e)
         {
-            txt_onCbxChooseFile.Visible = false;
-            cbx_chooseFile.Focus();
-            cbx_chooseFile.DroppedDown = true;
+            txt_onCbxChooseFileWeapons.Visible = false;
+            cbx_chooseFileWeapons.Focus();
+            cbx_chooseFileWeapons.DroppedDown = true;
         }
 
-        private void cbx_chooseFile_MouseClick(object sender, MouseEventArgs e)
+        private void cbx_chooseFileWeapons_MouseClick(object sender, MouseEventArgs e)
         {
-            txt_onCbxChooseFile.Visible = false;
-            cbx_chooseFile.DroppedDown = true;
+            txt_onCbxChooseFileWeapons.Visible = false;
+            cbx_chooseFileWeapons.DroppedDown = true;
         }
 
-        private void cbx_chooseExportFolder_MouseClick(object sender, MouseEventArgs e)
+        private void txt_onCbxChooseFileArmor_MouseClick(object sender, MouseEventArgs e)
         {
-            txt_onCbxChooseExportFolder.Visible = false;
-            cbx_chooseExportFolder.DroppedDown = true;
+            txt_onCbxChooseFileArmor.Visible = false;
+            cbx_chooseFileArmor.Focus();
+            cbx_chooseFileArmor.DroppedDown = true;
+        }
+
+        private void cbx_chooseFileArmor_MouseClick(object sender, MouseEventArgs e)
+        {
+            txt_onCbxChooseFileArmor.Visible = false;
+            cbx_chooseFileArmor.DroppedDown = true;
         }
 
         private void txt_onCbxChooseExportFolder_MouseClick(object sender, MouseEventArgs e)
@@ -165,9 +227,22 @@ namespace Outward_ExcelImportTool
             cbx_chooseExportFolder.DroppedDown = true;
         }
 
-        private void cbx_chooseFile_TextChanged(object sender, EventArgs e)
+        private void cbx_chooseExportFolder_MouseClick(object sender, MouseEventArgs e)
         {
-            chosenFile = cbx_chooseFile.Text;
+            txt_onCbxChooseExportFolder.Visible = false;
+            cbx_chooseExportFolder.DroppedDown = true;
+        }
+
+        
+
+        private void cbx_chooseFileWeapons_TextChanged(object sender, EventArgs e)
+        {
+            excelFile_Weapons = cbx_chooseFileWeapons.Text;
+        }
+
+        private void cbx_chooseFileArmor_TextChanged(object sender, EventArgs e)
+        {
+            excelFile_Armor = cbx_chooseFileArmor.Text;
         }
 
         private void cbx_chooseExportFolder_TextChanged(object sender, EventArgs e)
@@ -177,7 +252,8 @@ namespace Outward_ExcelImportTool
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            ChooseFile_AddToHistory();
+            ChooseFileWeapons_AddToHistory();
+            ChooseFileArmor_AddToHistory();
             ChooseFolder_AddToHistory();
             WriteHistoryFile();
         }
@@ -188,9 +264,15 @@ namespace Outward_ExcelImportTool
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
             const int maxHistoryItems = 5;
             
-            foreach (var item in cbx_chooseFile.Items) {
+            foreach (var item in cbx_chooseFileWeapons.Items) {
                 if (!string.IsNullOrEmpty(item.ToString())) {
-                    listImportFilesHistory.Insert(0, item.ToString());
+                    listImportFilesHistory_Weapons.Insert(0, item.ToString());
+                }
+            }
+
+            foreach (var item in cbx_chooseFileArmor.Items) {
+                if (!string.IsNullOrEmpty(item.ToString())) {
+                    listImportFilesHistory_Armor.Insert(0, item.ToString());
                 }
             }
 
@@ -200,8 +282,13 @@ namespace Outward_ExcelImportTool
                 }
             }
 
-            if (listImportFilesHistory.Count > maxHistoryItems) {
-                listImportFilesHistory.RemoveRange(maxHistoryItems, listImportFilesHistory.Count - maxHistoryItems);
+            if (listImportFilesHistory_Weapons.Count > maxHistoryItems) {
+                listImportFilesHistory_Weapons.RemoveRange(maxHistoryItems, listImportFilesHistory_Weapons.Count - maxHistoryItems);
+            }
+
+            if (listImportFilesHistory_Armor.Count > maxHistoryItems)
+            {
+                listImportFilesHistory_Armor.RemoveRange(maxHistoryItems, listImportFilesHistory_Armor.Count - maxHistoryItems);
             }
 
             if (listExportFoldersHistory.Count > maxHistoryItems) {
@@ -209,8 +296,14 @@ namespace Outward_ExcelImportTool
             }
 
             StreamWriter writer = new StreamWriter(baseDir + @"\history.txt");
-            writer.WriteLine("Import Files History:");
-            foreach (var line in listImportFilesHistory) {
+            writer.WriteLine("Import Weapons Files History:");
+            foreach (var line in listImportFilesHistory_Weapons) {
+                writer.WriteLine(line);
+            }
+            writer.WriteLine();
+            writer.WriteLine("Import Armor Files History:");
+            foreach (var line in listImportFilesHistory_Armor)
+            {
                 writer.WriteLine(line);
             }
             writer.WriteLine();
@@ -228,20 +321,20 @@ namespace Outward_ExcelImportTool
             if (File.Exists(baseDir + @"\history.txt"))
             {
                 using (StreamReader reader = new StreamReader(baseDir + @"\history.txt")) {
-                    bool exportFoldersPart = false;
+                    int historyPart = 0;
                     for (int i = 0; i < 100; i++) {
                         currentLine = reader.ReadLine();
                         if (!string.IsNullOrEmpty(currentLine)) {
-                            if (currentLine == "Import Files History:") {  continue;  }
-                            if (currentLine == "Export Folders History:") {
-                                exportFoldersPart = true;
-                                continue;
-                            }
-                            if (exportFoldersPart == false) {  cbx_chooseFile.Items.Add(currentLine); }
-                            if (exportFoldersPart == true) { cbx_chooseExportFolder.Items.Add(currentLine); }
+                            if (currentLine == "Import Weapons Files History:") { historyPart = 1;  continue; }
+                            if (currentLine == "Import Armor Files History:") { historyPart = 2; continue; }
+                            if (currentLine == "Export Folders History:") { historyPart = 3; continue; }
+
+                            if (historyPart == 1) { cbx_chooseFileWeapons.Items.Add(currentLine); }
+                            if (historyPart == 2) { cbx_chooseFileArmor.Items.Add(currentLine); }
+                            if (historyPart == 3) { cbx_chooseExportFolder.Items.Add(currentLine); }
                         }
                         else {
-                            if (exportFoldersPart) { break; }
+                            if (historyPart == 3) { break; }
                             else { continue; }
                         }
                     }
@@ -258,10 +351,16 @@ namespace Outward_ExcelImportTool
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (cbx_chooseFile.Focused == false)
+            if (cbx_chooseFileWeapons.Focused == false)
             {
-                if (string.IsNullOrEmpty(cbx_chooseFile.Text)) { txt_onCbxChooseFile.Visible = true; }
-                else { txt_onCbxChooseFile.Visible = false; }
+                if (string.IsNullOrEmpty(cbx_chooseFileWeapons.Text)) { txt_onCbxChooseFileWeapons.Visible = true; }
+                else { txt_onCbxChooseFileWeapons.Visible = false; }
+            }
+
+            if (cbx_chooseFileArmor.Focused == false)
+            {
+                if (string.IsNullOrEmpty(cbx_chooseFileArmor.Text)) { txt_onCbxChooseFileArmor.Visible = true; }
+                else { txt_onCbxChooseFileArmor.Visible = false; }
             }
 
             if (cbx_chooseExportFolder.Focused == false)
