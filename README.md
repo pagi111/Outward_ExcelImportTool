@@ -10,7 +10,6 @@ C# GUI app that facilitates the mod-making process for Outward. It reads through
 
 
 ---- FUTURE PLANS ---- 
-- add support for armour
 - change the way damage and resistance bonuses are edited in Excel
 - add support for status effects imposed by the weapons
 - MAYBE: add support for items such as potions, food, backpacks, etc. 
